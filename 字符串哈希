@@ -1,0 +1,31 @@
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <iostream>
+using namespace std;
+typedef unsigned long long ull;
+ull base=131;
+ull a[10010];
+int n,ans=1;
+ull hashs(string s) {
+    int len=s.length();
+    ull ans=0;
+    for (int i=0;i<len;i++)
+        ans=ans*base+(ull)s[i];
+    return ans & 0x7fffffff;
+}
+
+int main() {
+    string s,t; cin>>s>>t;
+    int sum = hashs(t);
+    int lens = s.length();
+    int lent = t.length();
+    for(int i=0;i<=lens-lent;i++) {
+        string tmp = s.substr(i,lent);
+        int tmpsum = hashs(tmp);
+        if(tmpsum == sum) {
+            cout<<i+1<<endl;
+        }
+    }
+    return 0;
+}
