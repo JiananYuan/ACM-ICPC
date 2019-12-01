@@ -1,0 +1,21 @@
+#include <stdio.h>
+#define mod 99194853094755497
+#define MAX 100006
+using namespace std;
+typedef long long ll;
+ll a[MAX];
+inline long long qmm(long long x,long long y) {
+    long long tmp=(x*y-(long long)((long double)x/mod*y+1.0e-8)*mod);
+    return tmp<0 ? tmp+mod : tmp;
+}
+
+int main() {
+    int n; cin>>n;
+    for(int i=1;i<=n;i++) scanf("%lld",&a[i]);
+    ll ans = a[1];
+    for(int i=2;i<=n;i++) {
+        ans = qmm(ans,a[i]);
+    }
+    cout<<ans<<endl;
+    return 0;
+}
