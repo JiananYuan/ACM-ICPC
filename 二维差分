@@ -1,0 +1,23 @@
+#include <iostream>
+#include <stdio.h>
+#define MAX 3002
+using namespace std;
+int cf[MAX][MAX];
+int main() {
+    int n,m,q; scanf("%d%d%d",&n,&m,&q);
+    while(q--) {
+        int x1,y1,x2,y2,v;
+        scanf("%d%d%d%d%d",&x1,&y1,&x2,&y2,&v);
+        cf[x1][y1] += v; cf[x1][y2+1] -= v;
+        cf[x2+1][y1] -= v; cf[x2+1][y2+1] += v;
+    }
+    for(int i=1;i<=n;i++) {
+        for(int j=1;j<=m;j++) {
+            cf[i][j] = cf[i-1][j] + cf[i][j-1] - cf[i-1][j-1] + cf[i][j];
+            if(j==1) printf("%d",cf[i][j]);
+            else     printf(" %d",cf[i][j]);
+        }
+        putchar('\n');
+    }
+    return 0;
+}
