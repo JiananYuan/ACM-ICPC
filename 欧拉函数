@@ -1,0 +1,30 @@
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+int gcd(int a,int b) { // a is bigger
+    if(b==0) return a;
+    return gcd(b,a%b);
+}
+bool judge(int a,int b) { // a is bigger
+    if(gcd(a,b) == 1) return true;
+    return false;
+}
+
+int main() {
+    int n; cin >> n;
+    int ans = n;
+    int m = n;
+    int i = 0;
+    for(i=2;i<=n;i++) {
+        if(n%i==0) {
+            while(n%i==0) n /= i;
+            ans = ans/i*(i-1);
+        }
+    }
+    cout << ans << endl;
+    int cnt = 1;
+    for(int i=1;i<m;i++) {
+        if(judge(m,i)) printf("%2d:%3d\n",cnt++,i);
+    }
+    return 0;
+}
