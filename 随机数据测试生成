@@ -1,0 +1,51 @@
+#include <iostream>
+#include <algorithm>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <set>
+#include <fstream>
+#include <stack>
+#define MAX 1005
+using namespace std;
+
+string transfer(int t) {
+    stack<int> v;
+    while(t) {
+        v.push(t%10);
+        t /= 10;
+    }
+    string rec;
+    while(!v.empty()) {
+        rec += (v.top() + '0');
+        v.pop();
+    }
+    return rec;
+}
+
+int main() {
+    int n; int t = 100;
+    for(int k=1;k<=t;k++) {
+        n = rand() % 1000;
+        string tmp1 = "" + transfer(k) + ".in";
+        ofstream in1(tmp1.c_str());
+        in1 << n << endl;
+        int a[MAX];
+        set<int> v;
+        srand((unsigned)time(NULL));
+        for(int i=0;i<n;i++) {
+            a[i] = rand() % 1000;
+            while(v.count(a[i])!=0) {
+                a[i] = rand() % 1000;
+            }
+            in1 << a[i] << " ";
+        }
+        in1.close();
+        sort(a,a+n);
+        string tmp2 = "" + transfer(k) + ".out";
+        ofstream in2(tmp2.c_str());
+        for(int i=0;i<n;i++) in2 << a[i] << " ";
+        in2.close();
+    }
+    return 0;
+}
