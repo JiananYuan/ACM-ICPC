@@ -1,0 +1,86 @@
+//************************法一***********************
+#include <iostream>
+#include <cstring>
+#define MAX 1000+5
+using namespace std;
+char p[MAX],s[MAX];
+int Next[MAX],ls,lp;
+void setNext() {
+    int j = 0;
+    for(int i = 2; i <= lp; i++) {
+        while(j && p[i]!=p[j+1]) j = Next[j];
+        if(p[j+1] == p[i]) j++;
+        Next[i] = j;
+    }
+}
+void kmp() {
+    ls = strlen(s+1);
+    lp = strlen(p+1);
+    setNext();
+    int j = 0;
+    for(int i = 1; i <= ls; i++) {
+        while(j>0 && p[j+1] != s[i]) j = Next[j];
+        if(p[j+1] == s[i]) j++;
+        if(j==lp) {
+            cout<<i-j+1<<endl;
+            j = Next[j];
+        }
+    }
+}
+
+int main() {
+    cin>>(s+1);
+    cin>>(p+1);
+    kmp();
+    return 0;
+}
+
+//***********************法二***************************
+#include <iostream>
+#include <string.h>
+#include <stdio.h>
+#define MAX 1000
+using namespace std;
+int lens ;
+int lenp ;
+void getNext(char* p,int* Next) {
+	Next[1] = 0;
+	int i = 1, j = 0;
+	while( i < lenp ) {
+		if(j==0 || p[i]==p[j]) {
+			i++; j++;
+			Next[i] = j;
+		}
+		else {
+			j = Next[j];
+		}
+	}
+}
+
+char* kmp(char* s,int pos,char* p) {
+	int Next[MAX+10];
+	getNext(p,Next);
+	int i = pos, j = 1;
+	while(i <= lens && j <= lenp) {
+		if(j ==0 || s[i] == p[j]) {
+			i++; j++;
+		}
+		else {
+			j = Next[j];
+		}
+	}
+	if(j == lenp + 1) {
+		return s+ (i - lenp);
+	}
+	return NULL;
+}
+
+int main() {
+	char p[MAX],s[MAX];
+	gets(s+1);
+	gets(p+1);
+	lens = strlen(s+1);
+	lenp = strlen(p+1);
+	cout<<kmp(s,1,p)<<endl;
+	return 0;
+}
