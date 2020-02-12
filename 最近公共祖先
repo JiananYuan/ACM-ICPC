@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+#define N 500005
+#define M 1000010
+using namespace std;
+
+int n,m,s,x,y,tot;
+int head[N],edge[M],nxt[M];
+int depth[N],fa[N][22],lg[N];
+
+void add(int x,int y) {
+    edge[++tot] = y;
+    nxt[tot] = head[x];
+    head[x] = tot;
+}
+
+void dfs(int x,int y) {
+    depth[x] = depth[y] + 1;
+    fa[x][0] = y;
+    for(int i = 1; (1 << i) <= depth[x]; i++)
+        fa[x][i] = fa[ fa[x][i-1] ][i-1];
+    for(int i = head[x]; i != 0; i = nxt[i]) {
+        if(edge[i] != y) {
+            dfs(edge[i],x);
+        }
+    }
+}
+
+int lca(int x,int y) {
+    if(depth[x] < depth[y]) {
+        swap(x,y);
+    }
+    for(int i = 1; i <= n; i++) {
+        lg[i] = lg[i-1] + (1 << lg[i-1] == i);
+    }
+    while(depth[x] > depth[y]) {
+        x = fa[x][ lg[depth[x]-depth[y]]-1 ];
+    }
+    if(x == y) return x;
+    for(int k = lg[ depth[x] ]-1; k >= 0; k--) {
+        if(fa[x][k] != fa[y][k]) {
+            x = fa[x][k];
+            y = fa[y][k];
+        }
+    }
+    return fa[x][0];
+}
+
+
+int main() {
+    int n,m,s; scanf("%d%d%d",&n,&m,&s);
+    for(int i = 1; i < n; i++) {
+        scanf("%d%d",&x,&y);
+        add(x,y); add(y,x);
+    }
+    dfs(s,0);
+    for(int i = 1; i <= m; i++) {
+        scanf("%d%d",&x,&y);
+        printf("%d\n",lca(x,y));
+    }
+    return 0;
+}
