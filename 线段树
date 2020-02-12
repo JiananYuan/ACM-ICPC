@@ -48,7 +48,7 @@ public:
         pushdown(pos,s,mid,t);
         if(l <= mid) update(l,r,c,s,mid,pos << 1);
         if(r > mid)  update(l,r,c,mid+1,t,pos << 1 | 1);
-        sum[pos] = sum[pos << 1] + sum[pos << 1 | 1];
+        pushup(pos);
     }
     ll getsum(ll l,ll r,ll s,ll t,ll pos) {
         if(l <= s && t <= r) return sum[pos];
