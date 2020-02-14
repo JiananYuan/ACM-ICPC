@@ -1,0 +1,12 @@
+//扩欧用来求解方程 ax + by = gcd(a,b) 的一组特解
+int exgcd(int a,int b,int& x,int& y) {
+    if(b == 0) {
+        x = 1, y = 0;
+        return a;
+    }
+    int gcd = exgcd(b,a%b,x,y);
+    int t = y;
+    y = x - (a/b) * y;
+    x = t;
+    return gcd;
+}
