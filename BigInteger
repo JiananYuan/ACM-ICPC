@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <string.h>
+#include <algorithm>
+#include <iostream>
+#define N 105
+#define Int BigInteger
+using namespace std;
+
+class BigInteger {
+protected:
+    char a[N];
+    int lena;
+public:
+    BigInteger() {}
+    BigInteger(char* s) {
+        strcpy(a,s);
+        lena = strlen(s);
+    }
+    BigInteger operator + (BigInteger v) {
+        char b[N];
+        strcpy(b,v.a);
+        int lenb = v.lena;
+        char ans[N];
+        int u = 0, i = lena-1, j = lenb-1, carry = 0;
+        while(i >= 0 && j >= 0) {
+            int tmp = (a[i]-'0') + (b[j]-'0') + carry;
+            if(tmp >= 10) {
+                tmp = tmp % 10;
+                carry = 1;
+            } else {
+                carry = 0;
+            }
+            ans[u++] = '0' + tmp;
+            i--, j--;
+        }
+        while(i >= 0) {
+            int tmp = (a[i]-'0') + carry;
+            if(tmp >= 10) {
+                tmp = tmp % 10;
+                carry = 1;
+            } else {
+                carry = 0;
+            }
+            ans[u++] = '0' + tmp;
+            i--;
+        }
+        while(j >= 0) {
+            int tmp = (b[j]-'0') + carry;
+            if(tmp >= 10) {
+                tmp = tmp % 10;
+                carry = 1;
+            } else {
+                carry = 0;
+            }
+            ans[u++] = '0' + tmp;
+            j--;
+        }
+        if(carry == 1) {
+            ans[u++] = '1';
+        }
+        reverse(ans,ans+u);
+        ans[u++] = '\0';
+        return BigInteger(ans);
+    }
+    friend ostream& operator << (ostream& out,BigInteger& t);
+    friend istream& operator >> (istream& in,BigInteger& t);
+};
+
+ostream& operator << (ostream& out,BigInteger& t) {
+    out << t.a;
+    return out;
+}
+
+istream& operator >> (istream& in,BigInteger& t) {
+    in >> t.a;
+    t.lena = strlen(t.a);
+    return in;
+}
+
+int main() {
+    Int a;
+    Int b;
+    cin >> a;
+    cin >> b;
+    Int c = a+b;
+    cout << c << endl;
+    return 0;
+}
