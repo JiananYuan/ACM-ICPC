@@ -1,0 +1,76 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+#include <queue>
+#include <algorithm>
+#define INF (1 << 21)
+#define N 15
+using namespace std;
+
+struct edge {
+    int from,to,cap, flow;
+    edge(int a,int b,int c,int d) {
+        from = a;
+        to = b;
+        cap = c;
+        flow = d;
+    }
+};
+
+struct solve {
+    int n,m;
+    vector<edge> edges;
+    vector<int>G[N];
+    int a[N];
+    int p[N];
+
+    solve(int n,int m) {
+        this->n = n;
+        this->m = m;
+    }
+    void addEdge(int from,int to,int cap) {
+        edges.push_back(edge(from,to,cap,0));
+        edges.push_back(edge(to,from,0,0));
+        m = edges.size();
+        G[from].push_back(m-2);
+        G[to].push_back(m-1);
+    }
+    int Maxflow(int s,int t) {
+        int flow = 0;
+        while(true) {
+            memset(a,0,sizeof(a));
+            queue<int> q;
+            q.push(s);
+            a[s] = INF;
+            while(!q.empty()) {
+                int x = q.front(); q.pop();
+                for (int i = 0 ; i < G[x].size(); i++) {
+                    edge& e = edges[ G[x][i] ];
+                    if(!a[e.to] && e.cap > e.flow) {
+                        p[e.to] = G[x][i];
+                        a[e.to] = min(a[x],e.cap-e.flow);
+                        q.push(e.to);
+                    }
+                }
+                if(a[t]) break;
+            }
+            if(!a[t]) break;
+            for (int u = t; u != s; u = edges[ p[u] ].from) {
+                edges[ p[u] ].flow += a[t];
+                edges[ p[u]^1 ].flow -= a[t];
+            }
+            flow += a[t];
+        }
+        return flow;
+    }
+};
+
+int main() {
+    solve s(6,10);
+    for(int i = 0 ; i < 10; i++) {
+        int x,y,c; cin >> x >> y >> c;
+        s.addEdge(x,y,c);
+    }
+    cout << s.Maxflow(0,5) << endl;
+    return 0;
+}
