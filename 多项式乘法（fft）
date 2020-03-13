@@ -1,0 +1,93 @@
+#include <bits/stdc++.h>
+#define N 4000009
+#define pi (4*atan(1))
+using namespace std;
+int n,m;
+int rev[N];
+
+struct Complex{
+    double x,y;
+    Complex(double x=0,double y=0):x(x),y(y){}
+
+    inline Complex operator + (const Complex b) const{
+        return Complex(x+b.x,y+b.y);
+    }
+
+    inline Complex operator - (const Complex b) const{
+        return Complex(x-b.x,y-b.y);
+    }
+
+    inline Complex operator * (const Complex b) const{
+        Complex res;
+        res.x = x*b.x-y*b.y;
+        res.y = x*b.y+y*b.x;
+        return res;
+    }
+}F[N];
+
+inline void read(int &x) {
+    x = 0;
+    char c = getchar();
+    while(c<'0'||c>'9') c = getchar();
+    while(c>='0'&&c<='9'){
+        x = (x<<3)+(x<<1)+(c^48);
+        c = getchar();
+    }
+}
+
+void print(int x) {
+    if(x>9) print(x/10);
+    putchar(x%10+'0');
+}
+
+inline void FFT(Complex *a,int type,int lim) {
+    for(int i=1;i<=lim;++i){
+        if(i>=rev[i]) continue;
+        swap(a[i],a[rev[i]]);
+    }
+    Complex rt,w,x,y;
+    for(int mid=1;mid<lim;mid<<=1){
+        int r = mid<<1;
+        rt = Complex(cos(pi/mid),type*sin(pi/mid));
+        for(int j=0;j<lim;j+=r){
+            w = Complex(1,0);
+            for(int k=0;k<mid;++k){
+                x = a[j|k];
+                y = w*a[j|k|mid];
+                a[j|k] = x+y;
+                a[j|k|mid] = x-y;
+                w = w*rt;
+            }
+        }
+    }
+    if(type==1) return;
+    for(int i=0;i<=lim;++i){
+        a[i].y = a[i].y/lim;
+        a[i].x = a[i].x/lim;
+    }
+}
+
+int main(){
+    int t,lim = 1,l = -1;
+    read(n),read(m);
+    for(int i=0;i<=n;++i) read(t),F[i].x = t;
+    for(int i=0;i<=m;++i) read(t),F[i].y = t;
+    t = n+m;
+    n = max(n,m);
+    while(lim<=(n<<1)){
+        lim <<= 1;
+        ++l;
+    }
+    for(int i=1;i<=lim;++i)
+        rev[i] = (rev[i>>1]>>1)|((i&1)<<l);
+    FFT(F,1,lim);
+    for(int i=0;i<=lim;++i)
+        F[i] = F[i]*F[i];
+    FFT(F,-1,lim);
+    for(int i=0;i<=t;++i){
+        int c = F[i].y/2+0.5;
+        print(c);
+        putchar(' ');
+    }
+    return 0;
+}
