@@ -1,0 +1,33 @@
+int w[N][N], cx[N], cy[N], nx, ny;
+bool visit[N];
+bool dfs(int u) {
+    for (int i = 1; i <= w[u][0]; ++i){
+        int v = w[u][i];
+        if (visit[v] == 0){
+            visit[v] = 1;
+            if (cy[v] == -1 || dfs(cy[v])){
+                cx[u] = v;
+                cy[v] = u;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
+int maxmatch() {
+    memset(cx,-1,sizeof(cx));
+    memset(cy,-1,sizeof(cy));
+    for (int i = 1; i <= nx; ++i){
+        if (cx[i] == -1){
+            memset(visit,0,sizeof(visit));
+            dfs(i);
+        }
+    }
+    for (int i = 1; i <= nx; ++i) {
+        if(cx[i] != -1) {
+            cout << i << "," << cx[i] << '\n';
+        }
+    }
+}
