@@ -1,0 +1,87 @@
+#include<bits/stdc++.h>
+#define INF 0x3f3f3f3f
+#define N 20
+using namespace std;
+
+int a[N][N];
+int X,Y; // 顶集个数
+int wx[N], wy[N]; // 记录正常顶标
+int cx[N], cy[N]; // 每个顶所匹配的顶
+int markX[N], markY[N]; //每个顶是否加入增广路
+int minz; //边权和顶标最小的差值
+
+bool dfs(int u) {
+	markX[u] = 1;
+	for (int i = 1; i <= Y; i++) {
+		if (!markY[i]) {
+			int t = wx[u] + wy[i] - a[u][i];
+			if (t == 0) {
+				markY[i] = 1;
+				if (cy[i] == -1 || dfs(cy[i])) {
+					cx[u] = i;
+					cy[i] = u;
+					return true;
+				}
+			}
+			else if (t > 0) {
+				minz = min(minz,t);
+			}
+		}
+	}
+	return false;
+}
+
+int KM() {
+	memset(cx, -1, sizeof(cx));
+	memset(cy, -1, sizeof(cy)); // 初始均未匹配
+	for (int i = 1; i <= X; i++) {
+		while (true) {
+			minz = INF;
+			memset(markX,0,sizeof(markX));
+			memset(markY,0,sizeof(markY));
+			if (dfs(i)) {
+                break;
+			}
+			for (int j = 1; j <= X; j++) {
+                if (markX[j]) {
+                    wx[j] -= minz;
+                }
+			}
+			for (int j = 1; j <= Y; j++) {
+                if (markY[j]) {
+                    wy[j] += minz;
+                }
+			}
+		}
+	}
+	int ans = 0; // 最佳匹配的权值
+	for (int i = 1; i <= X; i++) {
+        if (cx[i] != -1) {
+            cout << i << "," << cx[i] << endl;
+            ans += a[i][cx[i]];
+        }
+	}
+	return ans;
+}
+
+int main() {
+    cin >> X;  Y = X;
+    for (int i = 1; i <= X; ++i) {
+        int maxx = -INF;
+        for (int j = 1; j <= Y; ++j) {
+            cin >> a[i][j];
+            maxx = max(maxx,a[i][j]);
+        }
+        wx[i] = maxx;
+    }
+    KM();
+	return 0;
+}
+
+/*
+3 5 5 4 1
+2 2 0 2 2
+2 4 4 1 0
+0 1 1 0 0
+1 2 1 3 3
+*/
